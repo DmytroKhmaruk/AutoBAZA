@@ -9,19 +9,18 @@ function AdvertsList() {
     const adverts = useSelector((state) => state.adverts.allAdverts);
     const favorites = useSelector((state) => state.adverts.favorites);
     
-    console.log(adverts)
+    console.log(adverts, 5)
 
-    // const [adverts, setAdverts] = useState([])
-    const [visibleAdvertsCount, setVisibleAdvertsCount] = useState(0);
-    const [visibleAdverts, setVisibleAdverts] = useState([]);
+    const [visibleAdvertsCount, setVisibleAdvertsCount] = useState(8);
+    const [filteredAdverts, setFilteredAdverts] = useState([]);
     const [selectedBrand, setSelectedBrand] = useState('');
 
     useEffect(() => {
         if (adverts.length === 0) {
             dispatch(fetchAdvertsAsync());
         } else {
+            setFilteredAdverts(adverts);
             setVisibleAdvertsCount(8);
-            setVisibleAdverts(adverts.slice(0, 8));
         }
     }, [dispatch, adverts]);
 
@@ -37,36 +36,29 @@ function AdvertsList() {
     }
 
     const handleLoadMore = () => {
-        setVisibleAdverts((prevVisibleAdverts) => {
-            const newVisibleAdvartsCount = prevVisibleAdverts + 8;
-            return adverts.slice(0, newVisibleAdvartsCount);
-        });
+        setVisibleAdvertsCount((prevCount) => prevCount + 8);
     };
 
-    const handleSearch = (filteredAdverts) => {
-        setSelectedBrand('');
-  
-        const limitedVisibleAdverts = filteredAdverts.slice(0, 8)
-        if (filteredAdverts.length < 8) {
-            setVisibleAdvertsCount(filteredAdverts.length);
-        } else {
-            setVisibleAdvertsCount(8)
-        }
-        
-        setVisibleAdverts(limitedVisibleAdverts);
+    const handleFilter = (filtered) => {
+        setFilteredAdverts(filtered);
+        setVisibleAdvertsCount(8);
     };
 
-    // const visibleAdverts = selectedBrand ? adverts.filter(
-    //     advert => advert.make === selectedBrand).slice(0, visibleAdvertsCount) : adverts.slice(0, visibleAdvertsCount)
+    // const visibleAdverts = filteredAdverts.slice(0, visibleAdvertsCount);
+      
 
     return (
         <div>
             <h1>List of ads</h1>
-            <SearchFilter adverts={adverts} onFilter={handleSearch} visibleAdvertsUpdater={setVisibleAdverts}
-                selectedBrandUpdater={setSelectedBrand} />
+            <SearchFilter
+                adverts={adverts}
+                onFilter={handleFilter}
+                visibleAdvertsUpdater={setVisibleAdvertsCount}
+                setSelectedBrand={setSelectedBrand}
+            />
             <CardList>
-                {Array.isArray(visibleAdverts) &&
-                    visibleAdverts.map((advert) => (
+                {Array.isArray(filteredAdverts) &&
+                    filteredAdverts.slice(0, visibleAdvertsCount).map((advert) => (
                     <li key={advert.id}>{advert.title}
                         <AdvertCard>
                             <AdvertImage src={advert.img} alt={`${advert.make} ${advert.model}`} />
@@ -82,7 +74,7 @@ function AdvertsList() {
                     </li>
                 ))}
             </CardList>
-            {visibleAdvertsCount < adverts.length && (
+            {visibleAdvertsCount < filteredAdverts.length && (
                 <button onClick={handleLoadMore}>Load More</button>
             )}
         </div>
