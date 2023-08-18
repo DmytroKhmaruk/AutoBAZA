@@ -12,12 +12,16 @@ function AdvertsList() {
     console.log(adverts)
 
     // const [adverts, setAdverts] = useState([])
-    const [visibleAdvertsCount, setVisibleAdverts] = useState(8);
+    const [visibleAdvertsCount, setVisibleAdvertsCount] = useState(0);
+    const [visibleAdverts, setVisibleAdverts] = useState([]);
     const [selectedBrand, setSelectedBrand] = useState('');
 
     useEffect(() => {
         if (adverts.length === 0) {
             dispatch(fetchAdvertsAsync());
+        } else {
+            setVisibleAdvertsCount(8);
+            setVisibleAdverts(adverts.slice(0, 8));
         }
     }, [dispatch, adverts]);
 
@@ -33,19 +37,27 @@ function AdvertsList() {
     }
 
     const handleLoadMore = () => {
-        setVisibleAdverts((prevVisibleAdverts) => prevVisibleAdverts + 8);
+        setVisibleAdverts((prevVisibleAdverts) => {
+            const newVisibleAdvartsCount = prevVisibleAdverts + 8;
+            return adverts.slice(0, newVisibleAdvartsCount);
+        });
     };
 
     const handleSearch = (filteredAdverts) => {
-        setVisibleAdverts(filteredAdverts.slice(0, visibleAdvertsCount));
-
-        if (visibleAdvertsCount > filteredAdverts.length) {
-            setVisibleAdverts(filteredAdverts.length);
+        setSelectedBrand('');
+  
+        const limitedVisibleAdverts = filteredAdverts.slice(0, 8)
+        if (filteredAdverts.length < 8) {
+            setVisibleAdvertsCount(filteredAdverts.length);
+        } else {
+            setVisibleAdvertsCount(8)
         }
+        
+        setVisibleAdverts(limitedVisibleAdverts);
     };
 
-    const visibleAdverts = selectedBrand ? adverts.filter(
-        advert => advert.make === selectedBrand).slice(0, visibleAdvertsCount) : adverts.slice(0, visibleAdvertsCount)
+    // const visibleAdverts = selectedBrand ? adverts.filter(
+    //     advert => advert.make === selectedBrand).slice(0, visibleAdvertsCount) : adverts.slice(0, visibleAdvertsCount)
 
     return (
         <div>

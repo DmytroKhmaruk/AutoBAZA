@@ -21,7 +21,9 @@ function SearchFilter({ onFilter, visibleAdvertsUpdater }) {
 
         const filteredAdverts = adverts.filter((advert) =>
             selectedBrand === '' || advert.make === selectedBrand);
-        onFilter(filteredAdverts, visibleAdvertsUpdater);
+        
+        onFilter(filteredAdverts);
+        visibleAdvertsUpdater(filteredAdverts);
         console.log(filteredAdverts)
     };
 
