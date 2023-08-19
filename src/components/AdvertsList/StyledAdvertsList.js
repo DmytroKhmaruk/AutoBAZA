@@ -8,7 +8,7 @@ export const CardList = styled.ul`
 `;
 
 export const AdvertCard = styled.div`
-    width: 274px;
+    width: 285px;
     display: inline-block;
     overflow: hidden;
         /* li { 

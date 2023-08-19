@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import {fetchAdverts, fetchAdvertById} from "../../api";
 
 export const fetchAdvertsAsync = createAsyncThunk('adverts/fetchAdverts', async () => {
@@ -10,6 +10,8 @@ export const fetchAdvertByIdAsync = createAsyncThunk('adverts/fetchAdvertById', 
     const response = await fetchAdvertById(advertId);
     return response;
 })
+
+export const setFavoriteAdverts = createAction('advert/setFavoriteAdverts');
 
 const advertsSlice = createSlice({
     name: 'adverts',
@@ -37,11 +39,17 @@ const advertsSlice = createSlice({
             const advert = action.payload;
             if (!state.favorites.includes(advert)) {
                 state.favorites.push(advert);
+                console.log("Added to favorites:", advert)
             }
         },
         removeFromeFavorites: (state, action) => {
             const advert = action.payload;
         state.favorites = state.favorites.filter(item => item.id !== advert.id);
+            console.log("Removed from favorites:", advert);
+        },
+
+        setFavoriteAdverts: (state, action) => {
+            state.favorites = action.payload;
         },
     },
     extraReducers: (builder) => {

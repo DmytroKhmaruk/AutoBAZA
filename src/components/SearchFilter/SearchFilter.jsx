@@ -44,12 +44,17 @@ function SearchFilter({ onFilter }) {
     };
 
     const handleSearch = () => {
-        const filteredAdverts = adverts.filter((advert) =>
+        const filteredAdverts = adverts.filter((advert) => {
+            const rentalPrice = parseInt(advert.rentalPrice.substring(1));
+            const mileage = parseFloat(advert.mileage);
+
+        return(
             (selectedBrand === '' || advert.make === selectedBrand) &&
-            (priseFrom <= parseInt(advert.rentalPrice.substring(1))) &&
-            (mileageFrom === '' || parseFloat(advert.mileage) >= parseFloat(mileageFrom)) &&
-            (mileageTo === '' || parseFloat(advert.mileage) <= parseFloat(mileageTo))
+                (priseFrom <= rentalPrice) &&
+                (mileageFrom === '' || mileage >= parseFloat(mileageFrom)) &&
+                (mileageTo === '' || mileage <= parseFloat(mileageTo))
         );
+    });
         onFilter(filteredAdverts);
         setSelectedBrand(selectedBrand);
     };

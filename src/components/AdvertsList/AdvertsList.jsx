@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchAdvertsAsync, addToFavorite, removeFromeFavorites } from "../../redux/reducers/rootReducer";
+import { fetchAdvertsAsync, addToFavorite, removeFromeFavorites, setFavoriteAdverts } from "../../redux/reducers/rootReducer";
 import { CardList, AdvertCard, AdvertImage } from './StyledAdvertsList';
 import SearchFilter from "../SearchFilter/SearchFilter";
 import AdvertModal from '../AdvertModal/AdvertModal';
@@ -9,14 +9,11 @@ function AdvertsList({type}) {
     const dispatch = useDispatch();
     const adverts = useSelector((state) => state.adverts.allAdverts);
     const favorites = useSelector((state) => state.adverts.favorites);
-    
-    console.log(adverts, 5)
 
     const [visibleAdvertsCount, setVisibleAdvertsCount] = useState(8);
     const [filteredAdverts, setFilteredAdverts] = useState([]);
     const [selectedBrand, setSelectedBrand] = useState('');
     const [selectedAdvert, setSelectedAdvert] = useState(null);
-
     useEffect(() => {
         if (adverts.length === 0) {
             dispatch(fetchAdvertsAsync());
@@ -26,12 +23,26 @@ function AdvertsList({type}) {
         }
     }, [dispatch, adverts]);
 
-    const handleToggleFavorite = (advert) => {
+    useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem('favoriteAdverts') || '[]');
+        dispatch(setFavoriteAdverts(storedFavorites));
+    }, [dispatch]);
+
+    const handleToggleFavorite = (advert) => {   
+        let updatedFavorites;
+
         if (favorites.some((fav) => fav.id === advert.id)) {
+            updatedFavorites = favorites.filter((fav) => fav.id !== advert.id);
+            localStorage.setItem('favoriteAdverts', JSON.stringify(updatedFavorites));
             dispatch(removeFromeFavorites(advert));
+
         } else {
+            updatedFavorites = [...favorites, advert];
+            localStorage.setItem('favoriteAdverts', JSON.stringify(updatedFavorites));
             dispatch(addToFavorite(advert));
         }
+
+        console.log('Updated favorites:', updatedFavorites);
     };
 
     const handleShowDetails = (advert) => {
@@ -51,7 +62,6 @@ function AdvertsList({type}) {
         setVisibleAdvertsCount(8);
     };
 
-    // const visibleAdverts = filteredAdverts.slice(0, visibleAdvertsCount);
       
     const arrayFOrRender = type === 'MAIN' && filteredAdverts || type === 'FAVORITES' && favorites || []; 
 
