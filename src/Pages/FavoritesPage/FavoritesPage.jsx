@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addToFavorite, removeFromeFavorites } from '../../redux/reducers/rootReducer'
 import SearchFilter from "../../components/SearchFilter/SearchFilter";
 import { useState } from "react";
+import AdvertsList from "../../components/AdvertsList/AdvertsList";
 
 function Favorites() {
     const favorites = useSelector((state) => state.adverts.favorites);
@@ -10,13 +11,13 @@ function Favorites() {
 
     console.log("Favorites State:", favorites);
 
-    const handleToggleFavorite = (advert) => {
-        if (favorites.includes(advert)) {
-            dispatch(removeFromeFavorites(advert));
-        } else {
-            dispatch(addToFavorite(advert));
-        }
-    };
+    // const handleToggleFavorite = (advert) => {
+    //     if (favorites.includes(advert)) {
+    //         dispatch(removeFromeFavorites(advert));
+    //     } else {
+    //         dispatch(addToFavorite(advert));
+    //     }
+    // };
 
     const handleSearch = (filteredFavorite) => {
         setVisibleFavorites(filteredFavorite.slice(0, visibleFavorites.length));
@@ -25,16 +26,8 @@ function Favorites() {
     return (
         <div>
             <h1>Favorites</h1>
-            <SearchFilter adverts={favorites} onFilter={handleSearch} />
-            <ul>
-                {favorites.map((advert) => (
-                    <li key={advert.id}>{advert.title}
-                        <button onClick={() => handleToggleFavorite(advert)}>
-                            {favorites.includes(advert) ? 'Remove' : 'Add'} to Favorites
-                    </button>
-                    </li>
-                ))}
-            </ul>
+            {/* <SearchFilter adverts={favorites} onFilter={handleSearch} /> */}
+        <AdvertsList type='FAVORITES' />
         </div>
     );
 }

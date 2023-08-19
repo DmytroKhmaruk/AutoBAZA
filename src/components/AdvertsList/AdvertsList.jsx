@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchAdvertsAsync, addToFavorite, removeFromeFavorites } from "../../redux/reducers/rootReducer";
 import { CardList, AdvertCard, AdvertImage } from './StyledAdvertsList';
 import SearchFilter from "../SearchFilter/SearchFilter";
+import AdvertModal from '../AdvertModal/AdvertModal';
 
-function AdvertsList() {
+function AdvertsList({type}) {
     const dispatch = useDispatch();
     const adverts = useSelector((state) => state.adverts.allAdverts);
     const favorites = useSelector((state) => state.adverts.favorites);
@@ -14,6 +15,7 @@ function AdvertsList() {
     const [visibleAdvertsCount, setVisibleAdvertsCount] = useState(8);
     const [filteredAdverts, setFilteredAdverts] = useState([]);
     const [selectedBrand, setSelectedBrand] = useState('');
+    const [selectedAdvert, setSelectedAdvert] = useState(null);
 
     useEffect(() => {
         if (adverts.length === 0) {
@@ -31,8 +33,13 @@ function AdvertsList() {
             dispatch(addToFavorite(advert));
         }
     };
-    const handleShowDetails = (advertId) => {
-        
+
+    const handleShowDetails = (advert) => {
+        setSelectedAdvert(advert);
+    }
+    
+    const handleCloseModal = () => {
+        setSelectedAdvert(null);
     }
 
     const handleLoadMore = () => {
@@ -46,6 +53,7 @@ function AdvertsList() {
 
     // const visibleAdverts = filteredAdverts.slice(0, visibleAdvertsCount);
       
+    const arrayFOrRender = type === 'MAIN' && filteredAdverts || type === 'FAVORITES' && favorites || []; 
 
     return (
         <div>
@@ -56,9 +64,12 @@ function AdvertsList() {
                 visibleAdvertsUpdater={setVisibleAdvertsCount}
                 setSelectedBrand={setSelectedBrand}
             />
+            {selectedAdvert && (
+                <AdvertModal advert={selectedAdvert} onClose={handleCloseModal} />
+            )}
             <CardList>
-                {Array.isArray(filteredAdverts) &&
-                    filteredAdverts.slice(0, visibleAdvertsCount).map((advert) => (
+                {Array.isArray(arrayFOrRender) &&
+                    arrayFOrRender.slice(0, visibleAdvertsCount).map((advert) => (
                     <li key={advert.id}>{advert.title}
                         <AdvertCard>
                             <AdvertImage src={advert.img} alt={`${advert.make} ${advert.model}`} />
@@ -67,14 +78,14 @@ function AdvertsList() {
                         <button onClick={() => handleToggleFavorite(advert)}>
                             {favorites.some((fav) => fav.id === advert.id) ? 'Remove' : 'Add'} to Favorites
                         </button>
-                        <button onClick={() => handleShowDetails(advert.id)}>
+                        <button onClick={() => handleShowDetails(advert)}>
                             learn More
                             </button>
                         </AdvertCard>
                     </li>
                 ))}
             </CardList>
-            {visibleAdvertsCount < filteredAdverts.length && (
+            {visibleAdvertsCount < arrayFOrRender.length && (
                 <button onClick={handleLoadMore}>Load More</button>
             )}
         </div>
