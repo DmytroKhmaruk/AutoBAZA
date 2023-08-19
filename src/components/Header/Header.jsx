@@ -1,7 +1,8 @@
-import { HeaderContainer, NavContainer, LogoContainer, ActiveNavLink } from './StyledHeader';
+import { HeaderBorder, HeaderContainer, NavContainer, LogoContainer, ActiveNavLink } from './StyledHeader';
 import RcSvgIcon from '../../svg/RcSvgIcon.svg'
 function Header() {
     return (
+        <HeaderBorder>
         <HeaderContainer>
               <LogoContainer>
                 <a href="">
@@ -18,6 +19,7 @@ function Header() {
                 </ul>
             </NavContainer>
         </HeaderContainer>
+        </HeaderBorder>
     );
 }
 

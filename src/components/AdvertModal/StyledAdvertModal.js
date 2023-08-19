@@ -10,6 +10,7 @@ export const ModalOverlay = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 3;
 `;
 
 export const ModalContent = styled.div`
@@ -21,7 +22,7 @@ export const ModalContent = styled.div`
     flex-direction: column;
     align-items: center;
     width: 541px;
-    height: 752px;
+    height: 672px;
     
     img {
 

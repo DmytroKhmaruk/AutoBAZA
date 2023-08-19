@@ -14,33 +14,28 @@ function SearchFilter({ onFilter }) {
         if (adverts.length > 0) {
             const uniqueBrands = [...new Set(adverts.map((advert) => advert.make))];
             setBrands(uniqueBrands);
-            console.log('brands', brands)
         }
     }, [adverts]);
 
-    const handleBrandeChange = (e) => {
-        const selectedBrand = e.target.value;
-        setSelectedBrand(selectedBrand);
+    const handleBrandChange = (e) => {
+        setSelectedBrand(e.target.value);
 
-        const filteredAdverts = adverts.filter((advert) =>
-            selectedBrand === '' || advert.make === selectedBrand);
-        onFilter(filteredAdverts);
-        console.log(filteredAdverts)
+    //     const filteredAdverts = adverts.filter((advert) =>
+    //         selectedBrand === '' || advert.make === selectedBrand);
+    //     onFilter(filteredAdverts);
+    //     console.log(filteredAdverts)
     };
 
     const handlePriceChange = (e) => {
-        const newPriceFrom = parseInt(e.target.value);
-        setPriseFrom(newPriceFrom);
+        setPriseFrom(parseInt(e.target.value));
     };
 
     const handleMileageFromChange = (e) => {
-        const newMileageFrom = e.target.value;
-        setMileageFrom(newMileageFrom);
+        setMileageFrom(e.target.value);
     };
 
     const handleMileageToChange = (e) => {
-        const newMileageTo = e.target.value;
-        setMileageTo(newMileageTo);
+        setMileageTo(e.target.value);
     };
 
     const handleSearch = () => {
@@ -56,7 +51,19 @@ function SearchFilter({ onFilter }) {
         );
     });
         onFilter(filteredAdverts);
-        setSelectedBrand(selectedBrand);
+        // setSelectedBrand(selectedBrand);
+    };
+
+    const generatePriceOption = () => {
+        const priseOption = [];
+        for (let price = 30; price <= 500; price += (price < 100 ? 10 : 50)) {
+            priseOption.push(
+                <option key={price} value={price}>
+                    {price}
+                </option>
+            );
+        }
+        return priseOption;
     };
 
     return (
@@ -64,24 +71,23 @@ function SearchFilter({ onFilter }) {
     <div>
         <div>
             <label htmlFor="brand">Car Brand:</label>
-            <select id="brand" value={selectedBrand} onChange={handleBrandeChange}>
+            <select id="brand" value={selectedBrand} onChange={handleBrandChange}>
             <option value="">All Brands</option>
-            {brands.map((brand) => 
-                <option key={brand} value={brand}>{brand}</option>
-                )}
+                    {brands.map((brand) => (
+                        <option key={brand} value={brand}>{brand}</option>
+            ))}
                 </select>
         </div>
         <div>
                 <label htmlFor="price">Price/ 1 hour</label>
-                <input type="number" id="price" value={priseFrom} onChange={handlePriceChange} min='30' step='10'/>
+                <select id="price" value={priseFrom} onChange={handlePriceChange}>
+                    {generatePriceOption()}
+                </select>
             </div>
              <div>
-                <label htmlFor="mileageFrom">Сar mileage / km</label>
-                <input type="number" id="mileageFrom" value={mileageFrom} onChange={handleMileageFromChange}/>
-            </div>
-            <div>
-                <label htmlFor="mileageFrom">Сar mileage / km</label>
-                <input type="number" id="mileageFrom" value={mileageFrom} onChange={handleMileageFromChange}/>
+                <label htmlFor="mileage">Сar mileage / km</label>
+                <input type="number" id="mileageFrom" placeholder='From' value={mileageFrom} onChange={handleMileageFromChange}/>
+                <input type="number" id="mileageTo"  placeholder='To' value={mileageTo} onChange={handleMileageToChange}/>
             </div>
             <button onClick={handleSearch}>Search</button>
     </div>

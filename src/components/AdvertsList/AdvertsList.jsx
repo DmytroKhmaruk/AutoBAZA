@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAdvertsAsync, addToFavorite, removeFromeFavorites, setFavoriteAdverts } from "../../redux/reducers/rootReducer";
-import { CardList, AdvertCard, AdvertImage } from './StyledAdvertsList';
+import { CardList, CardItem, AdvertCard, AdvertImage, FavoriteButton, StyledFillHeart, StyledOutlineHeart, H2, SpanModel, SpanPrice, List, Item, P, LearnMoreButton, LoadMoreButton } from './StyledAdvertsList';
 import SearchFilter from "../SearchFilter/SearchFilter";
 import AdvertModal from '../AdvertModal/AdvertModal';
+import { favoritesUpdatedEvent } from "./favoritesUpdatedEvent";
+
 
 function AdvertsList({type}) {
     const dispatch = useDispatch();
@@ -43,6 +45,9 @@ function AdvertsList({type}) {
         }
 
         console.log('Updated favorites:', updatedFavorites);
+        favoritesUpdatedEvent.on('updated', (updatedFavorites) => {
+            dispatch(setFavoriteAdverts(updatedFavorites));
+        });
     };
 
     const handleShowDetails = (advert) => {
@@ -67,7 +72,6 @@ function AdvertsList({type}) {
 
     return (
         <div>
-            <h1>List of ads</h1>
             <SearchFilter
                 adverts={adverts}
                 onFilter={handleFilter}
@@ -80,23 +84,30 @@ function AdvertsList({type}) {
             <CardList>
                 {Array.isArray(arrayFOrRender) &&
                     arrayFOrRender.slice(0, visibleAdvertsCount).map((advert) => (
-                    <li key={advert.id}>{advert.title}
+                    <CardItem key={advert.id}>{advert.title}
                         <AdvertCard>
                             <AdvertImage src={advert.img} alt={`${advert.make} ${advert.model}`} />
-                            <h2>{advert.make} {advert.model} {advert.year}</h2>
-                            <p>{advert.rentalPrice}</p>
-                        <button onClick={() => handleToggleFavorite(advert)}>
-                            {favorites.some((fav) => fav.id === advert.id) ? 'Remove' : 'Add'} to Favorites
-                        </button>
-                        <button onClick={() => handleShowDetails(advert)}>
+                                <H2>{advert.make}<SpanModel>{advert.model}</SpanModel>, {advert.year}<SpanPrice>{advert.rentalPrice}</SpanPrice></H2>
+                                    <List>
+                                    <Item><P>{advert.address}</P></Item>
+                                    <Item><P>{advert.rentalCompany}</P></Item>
+                                    <Item><P>{advert.type}</P></Item>
+                                    <Item><P>{advert.model}</P></Item>
+                                    <Item><P>{advert.accessories[0]}</P></Item>
+                                    </List>
+                            
+                        <FavoriteButton onClick={() => handleToggleFavorite(advert)}>
+                            {favorites.some((fav) => fav.id === advert.id) ? <StyledFillHeart /> : <StyledOutlineHeart />}
+                        </FavoriteButton>
+                        <LearnMoreButton onClick={() => handleShowDetails(advert)}>
                             learn More
-                            </button>
+                            </LearnMoreButton>
                         </AdvertCard>
-                    </li>
+                    </CardItem>
                 ))}
             </CardList>
             {visibleAdvertsCount < arrayFOrRender.length && (
-                <button onClick={handleLoadMore}>Load More</button>
+                <LoadMoreButton onClick={handleLoadMore}>Load More</LoadMoreButton>
             )}
         </div>
     );
