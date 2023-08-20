@@ -1,13 +1,14 @@
 import { HeaderBorder, HeaderContainer, NavContainer, LogoContainer, ActiveNavLink } from './StyledHeader';
 import RcSvgIcon from '../../svg/RcSvgIcon.svg'
+import { Link } from 'react-router-dom';
 function Header() {
     return (
         <HeaderBorder>
         <HeaderContainer>
               <LogoContainer>
-                <a href="">
-                    <img src={RcSvgIcon} width='64' heigth='64'/>
-                    </a>
+                <Link to='/'>
+                    <img src={RcSvgIcon} alt='RentCar' width='64' heigth='64'/>
+                    </Link>
                 </LogoContainer>
             <NavContainer>
               

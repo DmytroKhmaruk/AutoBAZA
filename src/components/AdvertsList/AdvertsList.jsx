@@ -14,7 +14,7 @@ function AdvertsList({type}) {
 
     const [visibleAdvertsCount, setVisibleAdvertsCount] = useState(8);
     const [filteredAdverts, setFilteredAdverts] = useState([]);
-    const [selectedBrand, setSelectedBrand] = useState('');
+    const [setSelectedBrand] = useState('');
     const [selectedAdvert, setSelectedAdvert] = useState(null);
     useEffect(() => {
         if (adverts.length === 0) {
@@ -68,7 +68,7 @@ function AdvertsList({type}) {
     };
 
       
-    const arrayFOrRender = type === 'MAIN' && filteredAdverts || type === 'FAVORITES' && favorites || []; 
+    const arrayFOrRender = (type === 'MAIN' && filteredAdverts) || (type === 'FAVORITES' && favorites) || []; 
 
     return (
         <div>

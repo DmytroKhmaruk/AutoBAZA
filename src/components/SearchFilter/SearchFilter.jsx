@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-// import { SearchWrapper, SearchInput, SearchButton } from './StyledSearchFilter';
+import { FilterContainer, Label, Select, InputGroup, InputFrom, InputTo,SearchButton, StyledArrowDown } from './StyledSearchFilter';
 import { useSelector } from "react-redux";
+
 
 function SearchFilter({ onFilter }) {
     const adverts = useSelector((state) => state.adverts.allAdverts);
@@ -20,10 +21,6 @@ function SearchFilter({ onFilter }) {
     const handleBrandChange = (e) => {
         setSelectedBrand(e.target.value);
 
-    //     const filteredAdverts = adverts.filter((advert) =>
-    //         selectedBrand === '' || advert.make === selectedBrand);
-    //     onFilter(filteredAdverts);
-    //     console.log(filteredAdverts)
     };
 
     const handlePriceChange = (e) => {
@@ -51,7 +48,6 @@ function SearchFilter({ onFilter }) {
         );
     });
         onFilter(filteredAdverts);
-        // setSelectedBrand(selectedBrand);
     };
 
     const generatePriceOption = () => {
@@ -68,29 +64,31 @@ function SearchFilter({ onFilter }) {
 
     return (
         
-    <div>
+    <FilterContainer>
         <div>
-            <label htmlFor="brand">Car Brand:</label>
-            <select id="brand" value={selectedBrand} onChange={handleBrandChange}>
+            <Label htmlFor="brand">Car Brand</Label>
+            <Select id="brand" value={selectedBrand} onChange={handleBrandChange}>
             <option value="">All Brands</option>
                     {brands.map((brand) => (
                         <option key={brand} value={brand}>{brand}</option>
             ))}
-                </select>
+                </Select>
+                <StyledArrowDown size={20}/>
         </div>
         <div>
-                <label htmlFor="price">Price/ 1 hour</label>
-                <select id="price" value={priseFrom} onChange={handlePriceChange}>
+                <Label htmlFor="price">Price/ 1 hour</Label>
+                <Select id="price" value={priseFrom} onChange={handlePriceChange}>
                     {generatePriceOption()}
-                </select>
+                </Select>
+                <StyledArrowDown size={20}/>
             </div>
-             <div>
-                <label htmlFor="mileage">Сar mileage / km</label>
-                <input type="number" id="mileageFrom" placeholder='From' value={mileageFrom} onChange={handleMileageFromChange}/>
-                <input type="number" id="mileageTo"  placeholder='To' value={mileageTo} onChange={handleMileageToChange}/>
-            </div>
-            <button onClick={handleSearch}>Search</button>
-    </div>
+             <InputGroup>
+                <Label htmlFor="mileage">Сar mileage / km</Label>
+                <InputFrom type="number" id="mileageFrom" placeholder='From' value={mileageFrom} onChange={handleMileageFromChange}/>
+                <InputTo type="number" id="mileageTo"  placeholder='To' value={mileageTo} onChange={handleMileageToChange}/>
+            </InputGroup>
+            <SearchButton onClick={handleSearch}>Search</SearchButton>
+    </FilterContainer>
        
     );
 }
